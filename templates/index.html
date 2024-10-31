@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SNAS - BOT</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!--    <link rel="stylesheet" href="style.css">-->
+
+    <style>
+      /* Global Reset and Font Styling */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        color: #141313;
+        font-family: "Segoe UI", Roboto, "Open Sans", "Helvetica Neue",
+          sans-serif;
+      }
+
+      /* Body Styling */
+      body {
+        background-color: #f7f9fc;
+        font-family: "Open Sans", sans-serif;
+        padding: 20px;
+      }
+
+      /* Search Bar Styling */
+      .search {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+      }
+
+      .searchBar {
+        position: relative;
+      }
+
+      .searchBar input[type="text"] {
+        width: 500px;
+        padding: 12px 20px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .searchBar input[type="text"]:focus {
+        width: 800px;
+        border-color: #007bff;
+        outline: none;
+      }
+
+      .searchBar .search-icon {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #007bff;
+      }
+
+      /* Mobile Container */
+      .mobile-container {
+        display: flex;
+        max-width: 1000px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .mobile-container:hover {
+        transform: scale(1.01);
+      }
+
+      .mobile-image img {
+        width: 160px;
+        height: auto;
+        border-radius: 8px;
+      }
+
+      .mobile-info {
+        flex-grow: 2;
+        margin-left: 25px;
+      }
+
+      .mobile-info h2 {
+        font-size: 22px;
+        margin: 0;
+        color: #333;
+      }
+
+      .rating {
+        margin-top: 12px;
+        font-size: 14px;
+        color: #4caf50;
+      }
+
+      .specs {
+        margin-top: 15px;
+        list-style-type: none;
+        font-size: 15px;
+      }
+
+      .specs li {
+        margin-bottom: 8px;
+        color: #666;
+      }
+
+      /* Price Section and Button Styles */
+      .price-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        gap: 15px;
+      }
+
+      .price-section button {
+        padding: 6px;
+        /* background-color: #10eb3f; */
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .price-section button:hover {
+        /* background-color: #0056b3; */
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+      }
+
+      /* Individual Button Styles */
+      .view-flipkart {
+        background-color: #ff9900; /* Amazon's signature color */
+      }
+
+      .view-flipkart:hover {
+        background-color: #e68a00;
+      }
+
+      .view-amazon {
+        background-color: #2874f0; /* Flipkart's signature color */
+      }
+
+      .view-amazon:hover {
+        background-color: #0051d9;
+      }
+
+      /* Modal Styling */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      .modal-content {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        width: 80%;
+        max-width: 700px;
+        position: relative;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .close {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #999;
+      }
+
+      .close:hover {
+        color: #333;
+      }
+
+      /* Price Comparison Table Styling */
+      .table-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .comparison-table {
+        width: 90%;
+        max-width: 1200px;
+        border-collapse: collapse;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        margin-top: 2rem;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 15px;
+      }
+
+      .comparison-table th {
+        background-color: #007bff;
+        color: #fff;
+        font-size: 16px;
+      }
+
+      .comparison-table td {
+        color: #333;
+      }
+
+      .comparison-table .price {
+        font-weight: bold;
+        color: #ff5722;
+        font-size: 18px;
+      }
+
+      .comparison-table .free-delivery {
+        color: #28a745;
+      }
+
+      .comparison-table .no-delivery {
+        color: #ff0000;
+      }
+
+      .comparison-table .offer {
+        color: #ff5722;
+      }
+
+      .comparison-table .no-offer {
+        color: #999;
+      }
+
+      /* Hover Effect */
+      .comparison-table tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.05);
+        transition: background-color 0.3s ease;
+      }
+
+      /* Close Button for Comparison Page */
+      .close-comparison {
+        background-color: #ff0000;
+        color: white;
+        font-size: 16px;
+        padding: 8px 15px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        transition: background-color 0.3s ease-in-out;
+      }
+
+      .close-comparison:hover {
+        background-color: #cc0000;
+      }
+
+      /* Responsive Table for Mobile */
+      @media screen and (max-width: 768px) {
+        .comparison-table,
+        .comparison-table thead,
+        .comparison-table tbody,
+        .comparison-table th,
+        .comparison-table td,
+        .comparison-table tr {
+          display: block;
+        }
+
+        .comparison-table tr {
+          margin-bottom: 15px;
+        }
+
+        .comparison-table td::before {
+          content: attr(data-label);
+          position: absolute;
+          left: 15px;
+          font-weight: bold;
+          text-transform: uppercase;
+          color: #007bff;
+        }
+
+        .comparison-table td {
+          padding-left: 50px;
+          position: relative;
+          text-align: left;
+        }
+      }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="search">
+      <div class="searchBar">
+        <input type="text" id="searchInput" placeholder="Search..." />
+        <span class="search-icon"><i class="fas fa-search"></i></span>
+      </div>
+    </div>
+    <div class="mobile-container">
+      <div class="mobile-image">
+        <img src="../static/image.png" alt="OPPO K12x 5G" />
+      </div>
+      <div class="mobile-info">
+        <h2>
+          OPPO K12x 5G with 45W SUPERVOOC Charger In-The-Box (Breeze Blue, 128
+          GB)
+        </h2>
+        <div class="rating">
+          <span class="rating-value">4.5</span>
+          <span class="rating-details">75,549 Ratings & 2,163 Reviews</span>
+        </div>
+        <ul class="specs">
+          <li><strong>6 GB RAM</strong> | 128 GB ROM | Expandable Upto 1 TB</li>
+          <li>16.94 cm (6.67 inch) HD Display</li>
+          <li>32MP + 2MP | 8MP Front Camera</li>
+          <li>5100 mAh Battery</li>
+        </ul>
+      </div>
+      <div class="price-section">
+        <button class="view-amazon">View on Amazon</button>
+        <button class="view-flipkart">View on Flipkart</button>
+        <button class="compare-prices bg-green-700">Compare</button>
+      </div>
+    </div>
+
+    <!-- Price Comparison Modal -->
+    <div id="price-compare-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <center><h2>Price Comparison</h2></center>
+        <center>
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Website</th>
+                <th>Price</th>
+                <th>Rating</th>
+                <th>Free Delivery</th>
+                <th>Offers Available</th>
+              </tr>
+            </thead>
+            <tbody id="comparison-table-body">
+              <!-- Data will be inserted here -->
+            </tbody>
+          </table>
+        </center>
+      </div>
+    </div>
+
+    <script>
+      document
+        .querySelector(".view-amazon")
+        .addEventListener("click", function () {
+          window.open("https://www.amazon.in", "_blank");
+        });
+
+      document
+        .querySelector(".view-flipkart")
+        .addEventListener("click", function () {
+          window.open("https://www.flipkart.com", "_blank");
+        });
+
+      const modal = document.getElementById("price-compare-modal");
+      const compareBtn = document.querySelector(".compare-prices");
+      const closeBtn = document.querySelector(".close");
+
+      // Fetch comparison data from the server and populate the modal
+      compareBtn.addEventListener("click", async function () {
+        modal.style.display = "flex";
+
+        const productName = document.getElementById("searchInput").value;
+        if (productName.trim() === "") {
+          alert("Please enter a product name to compare");
+          modal.style.display = "none";
+          return;
+        }
+
+        try {
+          console.log(" Hello ");
+          const response = await fetch("/compare",{
+              method:"POST",
+              headers:{
+                'content-type':'application/json'
+              },
+              body:JSON.stringify({product:productName})
+            });
+
+          const data = await response.json();
+          console.log(data);
+          
+          // const tableBody = document.getElementById("comparison-table-body");
+          // tableBody.innerHTML = ""; // Clear previous data
+
+          // data.forEach((item) => {
+          //   const row = `<tr>
+          //                   <td>${item.website}</td>
+          //                   <td>₹${item.price}</td>
+          //                   <td>${item.rating}</td>
+          //                   <td>${item.free_delivery}</td>
+          //                   <td>${item.offers}</td>
+          //                </tr>`;
+          //   tableBody.innerHTML += row;
+          // });
+        } catch (error) {
+          console.error("Error fetching comparison data:", error);
+        }
+      });
+
+      // Close modal when clicking the close button
+      closeBtn.addEventListener("click", function () {
+        modal.style.display = "none";
+      });
+
+      // Close modal if clicking outside of modal content
+      window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>
